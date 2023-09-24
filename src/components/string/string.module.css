@@ -1,0 +1,12 @@
+.form {
+  display: flex;
+  margin: 0 auto;
+  max-width: 522px;
+  gap: 12px;
+}
+
+.algorythm {
+  display: flex;
+  margin: 120px auto 0 auto;
+  justify-content: center;
+}
