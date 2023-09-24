@@ -29,12 +29,13 @@ export const StringComponent: React.FC = () => {
     <SolutionLayout title="Строка">
       <form className={styles.form} onSubmit={onSubmit}>
         <Input
+          placeholder="Введите текст"
+          maxLength={11}
+          isLimitText={true}
+          disabled={isAnimating}
           onChange={(evt: FormEvent<HTMLInputElement>) =>
             setInputValue((evt.target as HTMLInputElement).value)
           }
-          placeholder="Введите текст"
-          isLimitText={true}
-          maxLength={11}
         />
         <Button type="submit" text="Развернуть" isLoader={isAnimating} />
       </form>
