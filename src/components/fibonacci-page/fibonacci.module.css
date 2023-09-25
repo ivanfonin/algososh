@@ -1,0 +1,15 @@
+.form {
+  display: flex;
+  margin: 0 auto;
+  max-width: 522px;
+  gap: 12px;
+}
+
+.fibonacci {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 944px;
+  margin: 48px auto 0 auto;
+  justify-content: center;
+  gap: 70px 16px;
+}
