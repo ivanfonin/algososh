@@ -43,7 +43,7 @@ export const StringComponent: React.FC = () => {
         />
         <Button type="submit" text="Развернуть" isLoader={isAnimating} />
       </form>
-      <div className={styles.algorythm}>
+      <div className={styles.string}>
         {circles && circles.map((letter, i) => <Circle key={i} {...letter} />)}
       </div>
     </SolutionLayout>
