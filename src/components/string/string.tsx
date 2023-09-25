@@ -7,7 +7,7 @@ import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import styles from "./string.module.css";
 
-type TLetter = {
+export type TLetter = {
   state: ElementStates;
   letter: string;
 };

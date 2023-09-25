@@ -1,7 +1,9 @@
+import React from "react";
 import { swap } from "../../utils/swap";
 import { pause } from "../../utils/pause";
 import { DELAY_IN_MS } from "../../constants/delays";
 import { ElementStates } from "../../types/element-states";
+import { TLetter } from "./string";
 
 /**
  * Функция наоброт массив элементов, представляющих собой символы в строке.
@@ -13,9 +15,9 @@ import { ElementStates } from "../../types/element-states";
  * @return {void}
  */
 export const reverseArray = async (
-  letters: any,
-  setCircles: any,
-  setIsAnimating: any
+  letters: TLetter[],
+  setCircles: React.Dispatch<React.SetStateAction<TLetter[]>>,
+  setIsAnimating: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   setIsAnimating(true);
   await pause(DELAY_IN_MS);
