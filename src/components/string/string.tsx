@@ -32,7 +32,6 @@ export const StringComponent: React.FC = () => {
       <form className={styles.form} onSubmit={onSubmit}>
         <Input
           value={inputValue}
-          name="reverse"
           placeholder="Введите текст"
           maxLength={11}
           isLimitText={true}
