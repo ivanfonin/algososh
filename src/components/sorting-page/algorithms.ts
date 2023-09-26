@@ -8,7 +8,7 @@ import { TColumn } from "./sorting-page";
 
 export const selectSort = async (
   arr: TColumn[],
-  direction: Direction,
+  order: Direction,
   setArray: React.Dispatch<SetStateAction<TColumn[]>>,
   setIsAnimating: React.Dispatch<SetStateAction<boolean>>
 ) => {
@@ -16,24 +16,24 @@ export const selectSort = async (
   const { length } = arr;
   const result = arr;
   for (let i = 0; i < length - 1; i++) {
-    let maxInd = i;
-    let maxEl = arr[i].index;
+    let targetInd = i;
+    let targetEl = arr[i].index;
     for (let j = i; j < length; j++) {
       arr[i].state = ElementStates.Changing;
       arr[j].state = ElementStates.Changing;
       setArray([...arr]);
       await pause(SHORT_DELAY_IN_MS);
       if (
-        (direction === Direction.Descending && arr[j].index > maxEl) ||
-        (direction === Direction.Ascending && arr[j].index < maxEl)
+        (order === Direction.Descending && arr[j].index > targetEl) ||
+        (order === Direction.Ascending && arr[j].index < targetEl)
       ) {
-        maxInd = j;
-        maxEl = arr[j].index;
+        targetInd = j;
+        targetEl = arr[j].index;
       }
       arr[i].state = ElementStates.Default;
       arr[j].state = ElementStates.Default;
     }
-    swap(result, i, maxInd);
+    swap(result, i, targetInd);
     arr[i].state = ElementStates.Modified;
   }
   arr[length - 1].state = ElementStates.Modified;
@@ -43,12 +43,28 @@ export const selectSort = async (
 
 export const bubbleSort = async (
   arr: TColumn[],
-  direction: Direction,
+  order: Direction,
   setArray: React.Dispatch<SetStateAction<TColumn[]>>,
   setIsAnimating: React.Dispatch<SetStateAction<boolean>>
 ) => {
   setIsAnimating(true);
-  await pause(SHORT_DELAY_IN_MS);
-  await pause(SHORT_DELAY_IN_MS);
+  const { length } = arr;
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr.length - i - 1; j++) {
+      arr[j].state = ElementStates.Changing;
+      arr[j + 1].state = ElementStates.Changing;
+      setArray([...arr]);
+      await pause(SHORT_DELAY_IN_MS);
+      if (
+        (order === Direction.Ascending && arr[j].index < arr[j + 1].index) ||
+        (order === Direction.Descending && arr[j].index > arr[j + 1].index)
+      ) {
+        swap(arr, j, j + 1);
+      }
+      arr[j].state = ElementStates.Default;
+    }
+    arr[length - i - 1].state = ElementStates.Modified;
+    setArray([...arr]);
+  }
   setIsAnimating(false);
 };
