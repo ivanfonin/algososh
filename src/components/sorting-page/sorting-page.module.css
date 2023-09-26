@@ -2,7 +2,7 @@
   display: grid;
   margin: 0 auto;
   max-width: 924px;
-  grid-template-columns: [select] auto 40px [bubble] auto 1fr [asc] auto 12px [desc] auto 1fr [reset] auto;
+  grid-template-columns: [select] auto 40px [bubble] auto 1fr [asc] 208px 12px [desc] 208px 1fr [reset] auto;
   align-items: center;
 }
 
@@ -27,4 +27,10 @@
 }
 
 .columns {
+  height: 348px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-top: 48px;
+  gap: 12px;
 }
