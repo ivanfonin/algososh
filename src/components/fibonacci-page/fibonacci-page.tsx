@@ -3,7 +3,7 @@ import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { fibonacci } from "./algorythm";
+import { fibonacci } from "./algorithm";
 import { pause } from "../../utils/pause";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import styles from "./fibonacci.module.css";
