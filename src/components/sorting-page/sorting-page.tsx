@@ -20,7 +20,7 @@ export type TColumn = {
 
 export const SortingPage: React.FC = () => {
   const [array, setArray] = useState<TColumn[]>([]);
-  const [direction, setDirection] = useState<Direction>();
+  const [order, setOrder] = useState<Direction>();
   const [algorithm, setAlgorithm] = useState<string>(Algorithms.Bubble);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
@@ -40,13 +40,13 @@ export const SortingPage: React.FC = () => {
     randomArr();
   }, []);
 
-  const sort = (direction: Direction) => {
-    setDirection(direction);
+  const sort = (order: Direction) => {
+    setOrder(order);
     if (algorithm === Algorithms.Select) {
-      selectSort(array, direction, setArray, setIsAnimating);
+      selectSort(array, order, setArray, setIsAnimating);
     }
     if (algorithm === Algorithms.Bubble) {
-      bubbleSort(array, direction, setArray, setIsAnimating);
+      bubbleSort(array, order, setArray, setIsAnimating);
     }
   };
 
@@ -81,7 +81,7 @@ export const SortingPage: React.FC = () => {
           text="По возрастанию"
           sorting={Direction.Ascending}
           onClick={() => sort(Direction.Ascending)}
-          isLoader={isAnimating && direction === Direction.Ascending}
+          isLoader={isAnimating && order === Direction.Ascending}
           disabled={isAnimating}
         ></Button>
         <Button
@@ -90,7 +90,7 @@ export const SortingPage: React.FC = () => {
           text="По убыванию"
           sorting={Direction.Descending}
           onClick={() => sort(Direction.Descending)}
-          isLoader={isAnimating && direction === Direction.Descending}
+          isLoader={isAnimating && order === Direction.Descending}
           disabled={isAnimating}
         ></Button>
         <Button
