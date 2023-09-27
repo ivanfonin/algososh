@@ -5,12 +5,13 @@ import { Button } from "../ui/button/button";
 import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
+  const [stack, setStack] = useState<any>();
   const [inputValue, setInputValue] = useState<string>("");
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   return (
     <SolutionLayout title="Стек">
-      <div className={styles.grid}>
+      <form className={styles.grid}>
         <Input
           extraClass={styles.input}
           value={inputValue}
@@ -22,10 +23,26 @@ export const StackPage: React.FC = () => {
             setInputValue((evt.target as HTMLInputElement).value)
           }
         />
-        <Button extraClass={styles.add} text="Добавить" />
-        <Button extraClass={styles.delete} text="Удалить" />
-        <Button extraClass={styles.clear} text="Очистить" />
-      </div>
+        <Button
+          type="button"
+          extraClass={styles.add}
+          text="Добавить"
+          disabled={!inputValue}
+        />
+        <Button
+          type="button"
+          extraClass={styles.delete}
+          text="Удалить"
+          disabled={!stack}
+        />
+        <Button
+          type="button"
+          extraClass={styles.clear}
+          text="Очистить"
+          disabled={!stack}
+          onClick={() => setInputValue("")}
+        />
+      </form>
       <div className={styles.stack}></div>
     </SolutionLayout>
   );
