@@ -19,7 +19,9 @@ export const StackPage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const stack = new Stack<TStackItem>(stackItems);
 
-  const handleAddItem = async (evt: FormEvent<any>) => {
+  const handleAddItem = async (
+    evt: FormEvent<HTMLFormElement | HTMLButtonElement>
+  ) => {
     evt.preventDefault();
     // Если в инпуте нет числа, метод .push() по ТЗ не вызывается.
     if (!/^\d+$/.test(inputValue)) return false;
