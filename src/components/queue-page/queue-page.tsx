@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
@@ -7,18 +7,27 @@ import { ElementStates } from "../../types/element-states";
 import { Queue } from "./queue";
 import styles from "./queue-page.module.css";
 
-const QUEUE_SIZE = 7;
-
 type TQueueItem = {
   state: ElementStates;
   letter: string;
 };
 
-const queue = new Queue<TQueueItem>(QUEUE_SIZE); // Инициализируем один раз вне компонента.
+const QUEUE_SIZE = 7;
+
+const QUEUE_ITEM: TQueueItem = {
+  state: ElementStates.Default,
+  letter: "",
+};
+
+const queue = new Queue<TQueueItem>(QUEUE_SIZE, QUEUE_ITEM); // Инициализируем один раз вне компонента.
 
 export const QueuePage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
-  const [queueItems, setQueueItems] = useState<(TQueueItem | null)[]>();
+  const [queueItems, setQueueItems] = useState<TQueueItem[]>();
+
+  useEffect(() => {
+    setQueueItems(queue.getItems());
+  }, [queueItems]);
 
   const handleAddItem = (
     evt: FormEvent<HTMLFormElement | HTMLButtonElement>
@@ -28,13 +37,22 @@ export const QueuePage: React.FC = () => {
       state: ElementStates.Default,
       letter: inputValue,
     });
-    setQueueItems(queue.getItems());
+    setQueueItems([...queue.getItems()]);
     setInputValue("");
   };
 
-  const handleDeleteItem = async () => {};
+  const handleDeleteItem = () => {
+    queue.dequeue();
+    setQueueItems([...queue.getItems()]);
+  };
 
-  const handleResetItems = () => {};
+  const handleResetItems = () => {
+    queue.clear();
+    setQueueItems([...queue.getItems()]);
+  };
+
+  const getHead = (i: number) =>
+    i === queue.getHead() && queue.getLength() ? "head" : "";
 
   return (
     <SolutionLayout title="Очередь">
@@ -53,29 +71,37 @@ export const QueuePage: React.FC = () => {
           type="submit"
           extraClass={styles.add}
           text="Добавить"
-          disabled={!inputValue || queueItems?.length === QUEUE_SIZE}
+          disabled={!inputValue || queue.getLength() === QUEUE_SIZE}
           onClick={handleAddItem}
         />
         <Button
           type="button"
           extraClass={styles.delete}
           text="Удалить"
-          disabled={!queueItems}
+          disabled={!queue.getLength()}
           onClick={handleDeleteItem}
         />
         <Button
           type="button"
           extraClass={styles.clear}
           text="Очистить"
-          disabled={!queueItems}
+          disabled={!queue.getLength()}
           onClick={handleResetItems}
         />
       </form>
       <div className={styles.queue}>
         {queueItems &&
-          queueItems.map(
-            (item, i) => item?.letter && <Circle key={i} {...item} />
-          )}
+          queueItems.map((item, i) => (
+            <Circle
+              key={i}
+              head={getHead(i)}
+              tail={
+                i === queue.getTail() - 1 && queue.getLength() ? "tail" : ""
+              }
+              index={i}
+              {...item}
+            />
+          ))}
       </div>
     </SolutionLayout>
   );
