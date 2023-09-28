@@ -1,23 +1,35 @@
 import React, { FormEvent, useState } from "react";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
+import { Circle } from "../ui/circle/circle";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { ElementStates } from "../../types/element-states";
+import { Queue } from "./queue";
 import styles from "./queue-page.module.css";
+
+const QUEUE_SIZE = 7;
 
 type TQueueItem = {
   state: ElementStates;
   letter: string;
 };
 
-export const QueuePage: React.FC = () => {
-  const [queueItems, setQueueItems] = useState<TQueueItem[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
+const queue = new Queue<TQueueItem>(QUEUE_SIZE); // Инициализируем один раз вне компонента.
 
-  const handleAddItem = async (
+export const QueuePage: React.FC = () => {
+  const [inputValue, setInputValue] = useState<string>("");
+  const [queueItems, setQueueItems] = useState<(TQueueItem | null)[]>();
+
+  const handleAddItem = (
     evt: FormEvent<HTMLFormElement | HTMLButtonElement>
   ) => {
     evt.preventDefault();
+    queue.enqueue({
+      state: ElementStates.Default,
+      letter: inputValue,
+    });
+    setQueueItems(queue.getItems());
+    setInputValue("");
   };
 
   const handleDeleteItem = async () => {};
@@ -41,25 +53,30 @@ export const QueuePage: React.FC = () => {
           type="submit"
           extraClass={styles.add}
           text="Добавить"
-          disabled={!inputValue}
+          disabled={!inputValue || queueItems?.length === QUEUE_SIZE}
           onClick={handleAddItem}
         />
         <Button
           type="button"
           extraClass={styles.delete}
           text="Удалить"
-          disabled={!queueItems.length}
+          disabled={!queueItems}
           onClick={handleDeleteItem}
         />
         <Button
           type="button"
           extraClass={styles.clear}
           text="Очистить"
-          disabled={!queueItems.length}
+          disabled={!queueItems}
           onClick={handleResetItems}
         />
       </form>
-      <div className={styles.stack}></div>
+      <div className={styles.queue}>
+        {queueItems &&
+          queueItems.map(
+            (item, i) => item?.letter && <Circle key={i} {...item} />
+          )}
+      </div>
     </SolutionLayout>
   );
 };
