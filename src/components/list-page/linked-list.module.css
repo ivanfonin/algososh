@@ -1,0 +1,57 @@
+.grid {
+  display: grid;
+  margin: 0 auto;
+  max-width: 952px;
+  grid-template-columns: [input] 204px [addhead] 1fr [addtail] 1fr [deletehead] 1fr [deletetail];
+  grid-template-rows: auto auto;
+  gap: 12px;
+  align-items: top;
+}
+
+.btn {
+  font-size: 15px;
+}
+
+.input {
+  grid-column-start: input;
+}
+
+.addhead {
+  grid-column-start: addhead;
+}
+
+.addtail {
+  grid-column-start: addtail;
+}
+
+.deletehead {
+  grid-column-start: deletehead;
+}
+
+.deletetail {
+  grid-column-start: deletetail;
+}
+
+.index {
+  grid-row-start: 2;
+  grid-column-start: input;
+}
+
+.addindex {
+  grid-row-start: 2;
+  grid-column-start: addhead;
+  grid-column-end: deletehead;
+}
+
+.deleteindex {
+  grid-row-start: 2;
+  grid-column-start: deletehead;
+  grid-column-end: end;
+}
+
+.list {
+  display: flex;
+  margin: 90px auto 0 auto;
+  justify-content: center;
+  gap: 16px;
+}
