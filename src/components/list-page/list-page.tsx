@@ -1,14 +1,34 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useMemo, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
+import { Circle } from "../ui/circle/circle";
+import { ArrowIcon } from "../ui/icons/arrow-icon";
+import { LinkedList } from "./linked-list";
 import styles from "./linked-list.module.css";
+
+const INITIAL_LIST_ITEMS = ["0", "34", "8", "1"];
+
+type TListItem = {
+  letter?: string;
+  index?: number;
+};
 
 export const ListPage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [indexValue, setIndexValue] = useState<string>("");
+  const [listItems, setListItems] = useState<TListItem[]>();
+  const list = useMemo(() => new LinkedList<string>(), []);
 
-  const handleAddToHead = () => {};
+  useEffect(() => {
+    INITIAL_LIST_ITEMS.forEach((item) => list.append(item));
+    setListItems(list.getItems());
+  }, [list]);
+
+  const handleAddToHead = () => {
+    list.append(inputValue);
+    list.print();
+  };
 
   const handleAddToTail = () => {};
 
@@ -54,6 +74,7 @@ export const ListPage: React.FC = () => {
           onClick={handleDeleteFromTail}
         />
         <Input
+          type="number"
           extraClass={styles.index}
           placeholder="Введите индекс"
           value={indexValue}
@@ -72,7 +93,17 @@ export const ListPage: React.FC = () => {
           onClick={handleDeleteByIndexl}
         />
       </form>
-      <div className={styles.list}></div>
+      <ul className={styles.list}>
+        {listItems &&
+          listItems.map((item, i) => {
+            return (
+              <li key={i} className={styles.listitem}>
+                <Circle index={i} {...item} />
+                {i < list.getSize() - 1 && <ArrowIcon />}
+              </li>
+            );
+          })}
+      </ul>
     </SolutionLayout>
   );
 };

@@ -7,7 +7,7 @@ export class Node<T> {
   }
 }
 
-interface ILinkedList<T> {
+export interface ILinkedList<T> {
   append: (element: T) => void;
   insertAt: (element: T, position: number) => void;
   getSize: () => number;
@@ -17,6 +17,7 @@ interface ILinkedList<T> {
 export class LinkedList<T> implements ILinkedList<T> {
   private head: Node<T> | null;
   private size: number;
+
   constructor() {
     this.head = null;
     this.size = 0;
@@ -84,5 +85,17 @@ export class LinkedList<T> implements ILinkedList<T> {
       curr = curr.next;
     }
     console.log(res);
+  }
+
+  getItems() {
+    let curr = this.head;
+    let res = [];
+    while (curr) {
+      res.push({
+        letter: curr.value,
+      });
+      curr = curr.next;
+    }
+    return res;
   }
 }
