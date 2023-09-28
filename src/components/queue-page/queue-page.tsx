@@ -4,22 +4,12 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { ElementStates } from "../../types/element-states";
+import { TQueueItem } from "../../types/queue";
 import { Queue } from "./queue";
 import { pause } from "../../utils/pause";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { QUEUE_ITEM, QUEUE_SIZE } from "../../constants/queue";
 import styles from "./queue-page.module.css";
-
-type TQueueItem = {
-  state: ElementStates;
-  letter: string;
-};
-
-const QUEUE_SIZE = 7;
-
-const QUEUE_ITEM: TQueueItem = {
-  state: ElementStates.Default,
-  letter: "",
-};
 
 const queue = new Queue<TQueueItem>(QUEUE_SIZE, QUEUE_ITEM); // Инициализируем один раз вне компонента.
 
