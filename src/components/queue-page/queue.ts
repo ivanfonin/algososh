@@ -1,3 +1,5 @@
+import { ElementStates } from "../../types/element-states";
+
 interface IQueue<T> {
   enqueue: (item: T) => void;
   dequeue: () => void;
@@ -6,9 +8,10 @@ interface IQueue<T> {
   getTail: () => number;
   getLength: () => number;
   getItems: () => T[];
+  setItemState: (i: number, state: ElementStates) => void;
 }
 
-export class Queue<T> implements IQueue<T> {
+export class Queue<T extends { state: ElementStates }> implements IQueue<T> {
   private container: T[] = [];
   private head = 0;
   private tail = 0;
@@ -19,7 +22,12 @@ export class Queue<T> implements IQueue<T> {
   constructor(size: number, emptyItem: T) {
     this.size = size;
     this.emptyItem = emptyItem;
-    this.container = Array(size).fill(emptyItem);
+    this.container = Array(size);
+    for (let i = 0; i < size; i++) {
+      // Использую копию пустого объекта, а не ссылку,
+      // чтобы потом устанавливать state индивидуально.
+      this.container[i] = JSON.parse(JSON.stringify(this.emptyItem));
+    }
   }
 
   enqueue = (item: T) => {
@@ -37,10 +45,7 @@ export class Queue<T> implements IQueue<T> {
       throw new Error("No elements in the queue");
     }
 
-    console.log("dequeue item:", this.head % this.size);
-
     this.container[this.head % this.size] = this.emptyItem;
-    console.log(this.container);
     this.length--;
     this.head++;
   };
@@ -57,7 +62,10 @@ export class Queue<T> implements IQueue<T> {
     this.tail = 0;
     this.head = 0;
     this.length = 0;
-    this.container = Array(this.size).fill(this.emptyItem);
+    this.container = Array(this.size);
+    for (let i = 0; i < this.size; i++) {
+      this.container[i] = JSON.parse(JSON.stringify(this.emptyItem));
+    }
   };
 
   getHead = () => this.head;
@@ -69,4 +77,8 @@ export class Queue<T> implements IQueue<T> {
   getLength = () => this.length;
 
   getItems = () => this.container;
+
+  setItemState = (i: number, state: ElementStates) => {
+    this.container[i].state = state;
+  };
 }

@@ -5,6 +5,8 @@ import { Circle } from "../ui/circle/circle";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { ElementStates } from "../../types/element-states";
 import { Queue } from "./queue";
+import { pause } from "../../utils/pause";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import styles from "./queue-page.module.css";
 
 type TQueueItem = {
@@ -29,10 +31,18 @@ export const QueuePage: React.FC = () => {
     setQueueItems(queue.getItems());
   }, [queueItems]);
 
-  const handleAddItem = (
+  const handleAddItem = async (
     evt: FormEvent<HTMLFormElement | HTMLButtonElement>
   ) => {
     evt.preventDefault();
+    // Сначала добавлем статус 'Changing' хвосту.
+    queue.setItemState(queue.getTail(), ElementStates.Changing);
+    setQueueItems([...queue.getItems()]);
+    await pause(SHORT_DELAY_IN_MS);
+    // После возвращаем хвосту статус 'Default'.
+    queue.setItemState(queue.getTail(), ElementStates.Default);
+    setQueueItems([...queue.getItems()]);
+    // И добавляем элемент в очередь.
     queue.enqueue({
       state: ElementStates.Default,
       letter: inputValue,
@@ -41,7 +51,15 @@ export const QueuePage: React.FC = () => {
     setInputValue("");
   };
 
-  const handleDeleteItem = () => {
+  const handleDeleteItem = async () => {
+    // Сначала добавлем статус 'Changing' голове.
+    queue.setItemState(queue.getHead(), ElementStates.Changing);
+    setQueueItems([...queue.getItems()]);
+    await pause(SHORT_DELAY_IN_MS);
+    // После возвращаем хвосту статус 'Default'.
+    queue.setItemState(queue.getHead(), ElementStates.Default);
+    setQueueItems([...queue.getItems()]);
+    // И удалеям из очереди.
     queue.dequeue();
     setQueueItems([...queue.getItems()]);
   };
