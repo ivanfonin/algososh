@@ -62,6 +62,9 @@ export const QueuePage: React.FC = () => {
   const getHead = (i: number) =>
     i === queue.getHead() && queue.getLength() ? "head" : "";
 
+  const getTail = (i: number) =>
+    i === queue.getTail() - 1 && queue.getLength() ? "tail" : "";
+
   return (
     <SolutionLayout title="Очередь">
       <form onSubmit={handleAddItem} className={styles.grid}>
@@ -103,10 +106,8 @@ export const QueuePage: React.FC = () => {
             <Circle
               key={i}
               head={getHead(i)}
-              tail={
-                i === queue.getTail() - 1 && queue.getLength() ? "tail" : ""
-              }
               index={i}
+              tail={getTail(i)}
               {...item}
             />
           ))}
