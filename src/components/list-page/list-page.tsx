@@ -15,30 +15,72 @@ type TListItem = {
 };
 
 export const ListPage: React.FC = () => {
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [indexValue, setIndexValue] = useState<string>("");
   const [listItems, setListItems] = useState<TListItem[]>();
   const list = useMemo(() => new LinkedList<string>(), []);
 
+  const getListItems = () => {
+    return list.getItems().map((item) => ({
+      letter: item,
+    }));
+  };
+
   useEffect(() => {
     INITIAL_LIST_ITEMS.forEach((item) => list.append(item));
-    setListItems(list.getItems());
+    setListItems(getListItems());
   }, [list]);
 
   const handleAddToHead = () => {
-    list.append(inputValue);
-    list.print();
+    if (!inputValue) return;
+    console.log("appending to head", inputValue);
+    list.prepend(inputValue);
+    setListItems(getListItems());
   };
 
-  const handleAddToTail = () => {};
+  const handleAddToTail = () => {
+    if (!inputValue) return;
+    console.log("appending to tail", inputValue);
+    list.append(inputValue);
+    setListItems(getListItems());
+  };
 
-  const handleDeleteFromHead = () => {};
+  const handleDeleteFromHead = () => {
+    console.log("delete from head");
+    list.deleteAt(0);
+    setListItems(getListItems());
+  };
 
-  const handleDeleteFromTail = () => {};
+  const handleDeleteFromTail = () => {
+    console.log("delete from tail");
+    list.deleteAt(list.getSize() - 1);
+    setListItems(getListItems());
+  };
 
-  const handleAddByIndex = () => {};
+  const handleAddByIndex = () => {
+    if (!indexValue) return;
+    console.log("insert at", indexValue, inputValue);
+    list.insertAt(inputValue, parseInt(indexValue));
+    setListItems(getListItems());
+  };
 
-  const handleDeleteByIndexl = () => {};
+  const handleDeleteByIndexl = () => {
+    if (!indexValue) return;
+    console.log("delete at", indexValue);
+    list.deleteAt(parseInt(indexValue));
+    setListItems(getListItems());
+  };
+
+  const isValidIndex = () => {
+    const index = parseInt(indexValue);
+    return index >= 0 && index < list.getSize();
+  };
+
+  const isValidAddIndex = () => {
+    const index = parseInt(indexValue);
+    return index >= 0 && index < list.getSize() + 1;
+  };
 
   return (
     <SolutionLayout title="Связный список">
@@ -49,6 +91,7 @@ export const ListPage: React.FC = () => {
           value={inputValue}
           maxLength={4}
           isLimitText={true}
+          disabled={isAnimating}
           onChange={(evt: FormEvent<HTMLInputElement>) =>
             setInputValue((evt.target as HTMLInputElement).value)
           }
@@ -57,24 +100,30 @@ export const ListPage: React.FC = () => {
           extraClass={`${styles.addhead} ${styles.btn}`}
           text="Добавить в head"
           onClick={handleAddToHead}
+          disabled={!inputValue}
         />
         <Button
           extraClass={`${styles.addtail} ${styles.btn}`}
           text="Добавить в tail"
           onClick={handleAddToTail}
+          disabled={!inputValue}
         />
         <Button
           extraClass={`${styles.deletehead} ${styles.btn}`}
           text="Удалить из head"
           onClick={handleDeleteFromHead}
+          disabled={!list.getSize()}
         />
         <Button
           extraClass={`${styles.deletetail} ${styles.btn}`}
           text="Удалить из tail"
           onClick={handleDeleteFromTail}
+          disabled={!list.getSize()}
         />
         <Input
           type="number"
+          min={0}
+          step={1}
           extraClass={styles.index}
           placeholder="Введите индекс"
           value={indexValue}
@@ -86,11 +135,13 @@ export const ListPage: React.FC = () => {
           extraClass={`${styles.addindex} ${styles.btn}`}
           text="Добавить по индексу"
           onClick={handleAddByIndex}
+          disabled={!inputValue || !isValidAddIndex()}
         />
         <Button
           extraClass={`${styles.deleteindex} ${styles.btn}`}
           text="Удалить по индексу"
           onClick={handleDeleteByIndexl}
+          disabled={!list.getSize() || !isValidIndex()}
         />
       </form>
       <ul className={styles.list}>
@@ -98,7 +149,12 @@ export const ListPage: React.FC = () => {
           listItems.map((item, i) => {
             return (
               <li key={i} className={styles.listitem}>
-                <Circle index={i} {...item} />
+                <Circle
+                  index={i}
+                  head={i === 0 ? "head" : ""}
+                  tail={i === list.getSize() - 1 ? "tail" : ""}
+                  {...item}
+                />
                 {i < list.getSize() - 1 && <ArrowIcon />}
               </li>
             );

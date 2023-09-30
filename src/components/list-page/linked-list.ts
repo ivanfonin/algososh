@@ -8,8 +8,10 @@ export class Node<T> {
 }
 
 export interface ILinkedList<T> {
-  append: (element: T) => void;
   insertAt: (element: T, position: number) => void;
+  deleteAt: (position: number) => void;
+  prepend: (element: T) => void;
+  append: (element: T) => void;
   getSize: () => number;
   print: () => void;
 }
@@ -56,6 +58,46 @@ export class LinkedList<T> implements ILinkedList<T> {
     }
   }
 
+  deleteAt(position: number) {
+    if (position < 0 || position >= this.size || this.head === null) {
+      console.log("Invalid position or empty list.");
+      return;
+    }
+
+    if (position === 0) {
+      this.head = this.head.next;
+    } else {
+      let curr: Node<T> | null = this.head;
+      let prev: Node<T> | null = null;
+      let currIndex = 0;
+
+      while (curr && currIndex < position) {
+        prev = curr;
+        curr = curr.next;
+        currIndex++;
+      }
+
+      if (curr && prev) {
+        prev.next = curr.next;
+      }
+    }
+
+    this.size--;
+  }
+
+  prepend(element: T) {
+    const node = new Node(element);
+
+    if (this.head === null) {
+      this.head = node;
+    } else {
+      node.next = this.head;
+      this.head = node;
+    }
+
+    this.size++;
+  }
+
   append(element: T) {
     const node = new Node(element);
     let current;
@@ -77,6 +119,16 @@ export class LinkedList<T> implements ILinkedList<T> {
     return this.size;
   }
 
+  getItems() {
+    let curr = this.head;
+    let items = [];
+    while (curr) {
+      items.push(curr.value);
+      curr = curr.next;
+    }
+    return items;
+  }
+
   print() {
     let curr = this.head;
     let res = "";
@@ -85,17 +137,5 @@ export class LinkedList<T> implements ILinkedList<T> {
       curr = curr.next;
     }
     console.log(res);
-  }
-
-  getItems() {
-    let curr = this.head;
-    let res = [];
-    while (curr) {
-      res.push({
-        letter: curr.value,
-      });
-      curr = curr.next;
-    }
-    return res;
   }
 }
