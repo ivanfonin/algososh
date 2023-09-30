@@ -3,7 +3,7 @@ import { swap } from "../../utils/swap";
 import { pause } from "../../utils/pause";
 import { DELAY_IN_MS } from "../../constants/delays";
 import { ElementStates } from "../../types/element-states";
-import { TLetter } from "./string";
+import { TLetter } from "../../types/string";
 
 /**
  * Функция наоброт массив элементов, представляющих собой символы в строке.

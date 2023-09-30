@@ -5,12 +5,8 @@ import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
+import { TLetter } from "../../types/string";
 import styles from "./string.module.css";
-
-export type TLetter = {
-  state: ElementStates;
-  letter: string;
-};
 
 export const StringComponent: React.FC = () => {
   const [isAnimating, setIsAnimating] = useState(false);
