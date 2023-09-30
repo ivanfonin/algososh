@@ -129,6 +129,28 @@ export class LinkedList<T> implements ILinkedList<T> {
     return items;
   }
 
+  getItem(index: number) {
+    if (index < 0 || index > this.size || this.head === null) {
+      console.log("List is empty, or index is not valid");
+      return;
+    }
+
+    if (index === 0) {
+      return this.head.value;
+    }
+
+    let curr: Node<T> | null = this.head;
+    let currIndex = 0;
+
+    while (curr) {
+      if (currIndex === index - 1) {
+        return curr.value;
+      }
+      curr = curr.next;
+      currIndex++;
+    }
+  }
+
   print() {
     let curr = this.head;
     let res = "";

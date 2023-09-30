@@ -13,7 +13,7 @@ import { ArrowIcon } from "../ui/icons/arrow-icon";
 import { LinkedList } from "./linked-list";
 import { ElementStates } from "../../types/element-states";
 import { pause } from "../../utils/pause";
-import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { DELAY_IN_MS } from "../../constants/delays";
 import styles from "./linked-list.module.css";
 
 const INITIAL_LIST_ITEMS = ["0", "34", "8", "1"];
@@ -23,22 +23,43 @@ type TListItem = {
   index?: number;
 };
 
+type TGetListItemsProps = {
+  index?: number;
+  state?: ElementStates;
+  text?: string;
+};
+
+enum Buttons {
+  addhead = "addhead",
+  deletehead = "deletehead",
+  addtail = "addtail",
+  deletetail = "deletetail",
+  addindex = "addindex",
+  deleteindex = "deleteindex",
+}
+
 export const ListPage: React.FC = () => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState<number | undefined>();
+  const [activeValue, setActiveValue] = useState<string | undefined>("");
+  const [loadingButton, setLoadingButton] = useState<Buttons | "">("");
   const [inputValue, setInputValue] = useState<string>("");
   const [indexValue, setIndexValue] = useState<string>("");
   const [listItems, setListItems] = useState<TListItem[]>();
   const list = useMemo(() => new LinkedList<string>(), []);
 
-  // При генерации элементов можем указать индекс и стейт элемента для подсветки.
+  // При генерации элементов можем указать индекс, стейт, текст элемента для подсветки.
   const getListItems = useCallback(
-    (i?: number, status?: ElementStates) => {
-      return list.getItems().map((item, index) => ({
-        letter: item,
-        state: i === index ? status : ElementStates.Default,
+    (props?: TGetListItemsProps) => {
+      const atts = props
+        ? props
+        : { index: undefined, state: undefined, text: undefined };
+      const { index, state, text } = atts;
+      return list.getItems().map((item, i) => ({
+        letter: i === index && text !== undefined ? text : item,
+        state: i === index && state ? state : ElementStates.Default,
       }));
     },
     [list]
@@ -51,60 +72,97 @@ export const ListPage: React.FC = () => {
 
   const handleAddToHead = async () => {
     if (!inputValue) return;
-    // Начинаем анимацию
+    // Включаем анимацию
     setIsAnimating(true);
+    setLoadingButton(Buttons.addhead);
     // Подсвечиваем 1-й элемент, устанвливаем статус "adding", делаем паузу
     setIsAdding(true);
     setActiveIndex(0);
-    await pause(SHORT_DELAY_IN_MS);
+    await pause(DELAY_IN_MS);
     // После паузы убираем подсветку
     setIsAdding(false);
     setActiveIndex(undefined);
     // Обновляем список и подсвечиваем измененный элемент, делаем паузу
     list.prepend(inputValue);
-    setListItems(getListItems(0, ElementStates.Modified));
-    await pause(SHORT_DELAY_IN_MS);
+    setListItems(getListItems({ index: 0, state: ElementStates.Modified }));
+    await pause(DELAY_IN_MS);
     // После паузы ставим всем элементам стейт "Default"
     setListItems(getListItems());
     // Выключаем анимацию и очищаем инпут
+    setLoadingButton("");
     setIsAnimating(false);
     setInputValue("");
   };
 
   const handleAddToTail = async () => {
     if (!inputValue) return;
-    // Начинаем анимацию
+    // Включаем анимацию
     setIsAnimating(true);
-    // Подсвечиваем последний элемент, устанвливаем статус "adding", делаем паузу
+    setLoadingButton(Buttons.addtail);
+    // Устанвливаем статус "adding", выводим активный элемент в конце, делаем паузу
     setIsAdding(true);
     setActiveIndex(list.getSize() - 1);
-    await pause(SHORT_DELAY_IN_MS);
-    // После паузы убираем подсветку
+    await pause(DELAY_IN_MS);
+    // После паузы убираем статус "adding", убираем активный элемент
     setIsAdding(false);
     setActiveIndex(undefined);
     // Обновляем список и подсвечиваем измененный элемент, делаем паузу
     list.append(inputValue);
-    setListItems(getListItems(list.getSize() - 1, ElementStates.Modified));
-    await pause(SHORT_DELAY_IN_MS);
+    setListItems(
+      getListItems({
+        index: list.getSize() - 1,
+        state: ElementStates.Modified,
+      })
+    );
+    await pause(DELAY_IN_MS);
     // После паузы ставим всем элементам стейт "Default"
     setListItems(getListItems());
     // Выключаем анимацию и очищаем инпут
+    setLoadingButton("");
     setIsAnimating(false);
     setInputValue("");
   };
 
-  const handleDeleteFromHead = () => {
+  const handleDeleteFromHead = async () => {
+    // Включаем анимацию
     setIsAnimating(true);
+    setLoadingButton(Buttons.deletehead);
+    // Устанвливаем статус "deleting", в активном элементе выводим значение удаляемого элемента
     setIsDeleting(true);
-    console.log("delete from head");
+    setActiveValue(list.getItem(0));
+    setActiveIndex(0);
+    // Убираем текст из удалеяемого элемента, обновляем список и делаем паузу
+    setListItems(getListItems({ index: 0, text: "" }));
+    await pause(DELAY_IN_MS);
+    // После паузы убираем статус "deleting" и активный элемент
+    setIsDeleting(false);
+    setActiveIndex(undefined);
+    // Удалеям элемент, выводим новый список, выключаем анимацию
     list.deleteAt(0);
     setListItems(getListItems());
+    setLoadingButton("");
+    setIsAnimating(false);
   };
 
-  const handleDeleteFromTail = () => {
-    console.log("delete from tail");
+  const handleDeleteFromTail = async () => {
+    // Включаем анимацию
+    setIsAnimating(true);
+    setLoadingButton(Buttons.deletetail);
+    // Устанвливаем статус "deleting", в активном элементе выводим значение удаляемого элемента
+    setIsDeleting(true);
+    setActiveValue(list.getItem(list.getSize() - 1));
+    setActiveIndex(list.getSize() - 1);
+    // Убираем текст из удалеяемого элемента, обновляем список и делаем паузу
+    setListItems(getListItems({ index: list.getSize() - 1, text: "" }));
+    await pause(DELAY_IN_MS);
+    // После паузы убираем статус "deleting" и активный элемент
+    setIsDeleting(false);
+    setActiveIndex(undefined);
+    // Удалеям элемент, выводим новый список, выключаем анимацию
     list.deleteAt(list.getSize() - 1);
     setListItems(getListItems());
+    setLoadingButton("");
+    setIsAnimating(false);
   };
 
   const handleAddByIndex = () => {
@@ -131,6 +189,16 @@ export const ListPage: React.FC = () => {
     return index >= 0 && index < list.getSize() + 1;
   };
 
+  const getHead = (i: number) => {
+    const addingFirst = activeIndex === 0 && isAdding;
+    return addingFirst || i !== 0 ? "" : "head";
+  };
+
+  const getTail = (i: number) => {
+    const deletingLast = activeIndex === list.getSize() - 1 && isDeleting;
+    return deletingLast || i !== list.getSize() - 1 ? "" : "tail";
+  };
+
   return (
     <SolutionLayout title="Связный список">
       <form className={styles.grid}>
@@ -140,6 +208,7 @@ export const ListPage: React.FC = () => {
           value={inputValue}
           maxLength={4}
           isLimitText={true}
+          disabled={isAnimating}
           onChange={(evt: FormEvent<HTMLInputElement>) =>
             setInputValue((evt.target as HTMLInputElement).value)
           }
@@ -148,25 +217,29 @@ export const ListPage: React.FC = () => {
           extraClass={`${styles.addhead} ${styles.btn}`}
           text="Добавить в head"
           onClick={handleAddToHead}
-          disabled={!inputValue}
+          isLoader={loadingButton === Buttons.addhead}
+          disabled={!inputValue || isAnimating}
         />
         <Button
           extraClass={`${styles.addtail} ${styles.btn}`}
           text="Добавить в tail"
           onClick={handleAddToTail}
-          disabled={!inputValue}
+          isLoader={loadingButton === "addtail"}
+          disabled={!inputValue || isAnimating}
         />
         <Button
           extraClass={`${styles.deletehead} ${styles.btn}`}
           text="Удалить из head"
           onClick={handleDeleteFromHead}
-          disabled={!list.getSize()}
+          isLoader={loadingButton === Buttons.deletehead}
+          disabled={!list.getSize() || isAnimating}
         />
         <Button
           extraClass={`${styles.deletetail} ${styles.btn}`}
           text="Удалить из tail"
           onClick={handleDeleteFromTail}
-          disabled={!list.getSize()}
+          isLoader={loadingButton === Buttons.deletetail}
+          disabled={!list.getSize() || isAnimating}
         />
         <Input
           type="number"
@@ -175,6 +248,7 @@ export const ListPage: React.FC = () => {
           extraClass={styles.index}
           placeholder="Введите индекс"
           value={indexValue}
+          disabled={isAnimating}
           onChange={(evt: FormEvent<HTMLInputElement>) =>
             setIndexValue((evt.target as HTMLInputElement).value)
           }
@@ -183,13 +257,15 @@ export const ListPage: React.FC = () => {
           extraClass={`${styles.addindex} ${styles.btn}`}
           text="Добавить по индексу"
           onClick={handleAddByIndex}
-          disabled={!inputValue || !isValidAddIndex()}
+          isLoader={loadingButton === Buttons.addindex}
+          disabled={!inputValue || !isValidAddIndex() || isAnimating}
         />
         <Button
           extraClass={`${styles.deleteindex} ${styles.btn}`}
           text="Удалить по индексу"
           onClick={handleDeleteByIndexl}
-          disabled={!list.getSize() || !isValidIndex()}
+          isLoader={loadingButton === Buttons.deleteindex}
+          disabled={!list.getSize() || !isValidIndex() || isAnimating}
         />
       </form>
       <ul className={styles.list}>
@@ -201,20 +277,15 @@ export const ListPage: React.FC = () => {
                   <Circle
                     isSmall={true}
                     extraClass={styles.top}
-                    letter={inputValue}
+                    letter={inputValue || activeValue}
                     state={ElementStates.Changing}
                   />
                 )}
 
                 <Circle
                   index={i}
-                  head={i === 0 && activeIndex !== 0 ? "head" : ""}
-                  tail={
-                    i === list.getSize() - 1 &&
-                    activeIndex !== list.getSize() - 1
-                      ? "tail"
-                      : ""
-                  }
+                  head={getHead(i)}
+                  tail={getTail(i)}
                   {...item}
                 />
 
@@ -222,7 +293,7 @@ export const ListPage: React.FC = () => {
                   <Circle
                     isSmall={true}
                     extraClass={styles.bottom}
-                    letter={inputValue}
+                    letter={inputValue || activeValue}
                     state={ElementStates.Changing}
                   />
                 )}
