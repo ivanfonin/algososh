@@ -4,7 +4,7 @@ import { pause } from "../../utils/pause";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
-import { TColumn } from "./sorting-page";
+import { TColumn } from "../../types/sorting-page";
 
 export const selectSort = async (
   arr: TColumn[],

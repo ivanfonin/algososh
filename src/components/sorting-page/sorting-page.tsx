@@ -6,17 +6,8 @@ import { Column } from "../ui/column/column";
 import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
 import { bubbleSort, selectSort } from "./algorithms";
+import { Algorithms, TColumn } from "../../types/sorting-page";
 import styles from "./sorting-page.module.css";
-
-export enum Algorithms {
-  Select = "select",
-  Bubble = "bubble",
-}
-
-export type TColumn = {
-  index: number;
-  state: ElementStates;
-};
 
 export const SortingPage: React.FC = () => {
   const [array, setArray] = useState<TColumn[]>([]);
