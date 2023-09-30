@@ -7,12 +7,8 @@ import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import { pause } from "../../utils/pause";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { TStackItem } from "../../types/stack-page";
 import styles from "./stack-page.module.css";
-
-type TStackItem = {
-  state: ElementStates;
-  letter: string;
-};
 
 export const StackPage: React.FC = () => {
   const [stackItems, setStackItems] = useState<TStackItem[]>([]);
