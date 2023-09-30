@@ -73,7 +73,6 @@ export const ListPage: React.FC = () => {
 
   const handleAddToTail = async () => {
     if (!inputValue) return;
-    console.log("appending to tail", inputValue);
     // Начинаем анимацию
     setIsAnimating(true);
     // Подсвечиваем последний элемент, устанвливаем статус "adding", делаем паузу
