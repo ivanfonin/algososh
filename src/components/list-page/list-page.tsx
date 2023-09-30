@@ -14,6 +14,7 @@ import { LinkedList } from "./linked-list";
 import { ElementStates } from "../../types/element-states";
 import { pause } from "../../utils/pause";
 import { DELAY_IN_MS } from "../../constants/delays";
+import { HEAD, TAIL } from "../../constants/element-captions";
 import styles from "./linked-list.module.css";
 
 const INITIAL_LIST_ITEMS = ["0", "34", "8", "1"];
@@ -24,7 +25,7 @@ type TListItem = {
 };
 
 type TGetListItemsProps = {
-  index?: number;
+  index?: number | number[];
   state?: ElementStates;
   text?: string;
 };
@@ -50,17 +51,21 @@ export const ListPage: React.FC = () => {
   const [listItems, setListItems] = useState<TListItem[]>();
   const list = useMemo(() => new LinkedList<string>(), []);
 
-  // При генерации элементов можем указать индекс, стейт, текст элемента для подсветки.
+  // При генерации элементов можем указать индекс/индексы, стейт/стейты, текст элемента/элементов для подсветки.
   const getListItems = useCallback(
     (props?: TGetListItemsProps) => {
       const atts = props
         ? props
         : { index: undefined, state: undefined, text: undefined };
       const { index, state, text } = atts;
-      return list.getItems().map((item, i) => ({
-        letter: i === index && text !== undefined ? text : item,
-        state: i === index && state ? state : ElementStates.Default,
-      }));
+      const indexes =
+        typeof index === "number" ? [index] : Array.isArray(index) ? index : [];
+      return list.getItems().map((item, i) => {
+        return {
+          letter: indexes.includes(i) && text !== undefined ? text : item,
+          state: indexes.includes(i) && state ? state : ElementStates.Default,
+        };
+      });
     },
     [list]
   );
@@ -165,14 +170,42 @@ export const ListPage: React.FC = () => {
     setIsAnimating(false);
   };
 
-  const handleAddByIndex = () => {
+  const handleAddByIndex = async () => {
     if (!indexValue) return;
-    console.log("insert at", indexValue, inputValue);
-    list.insertAt(inputValue, parseInt(indexValue));
+    const index = parseInt(indexValue);
+    // Включаем анимацию
+    setIsAnimating(true);
+    setLoadingButton(Buttons.deletetail);
+    // Устанавливаем статус "adding", в активном элементе выводим добавляемое значение
+    setIsAdding(true);
+    setActiveValue(inputValue);
+    // Сначала ставим активный элемент в самом начале, запоминаем элементы до нужного индекса
+    const changingElements = [];
+    let activeIndex = 0;
+    setActiveIndex(activeIndex);
+    // Потом идем до индекса и переносим активный элемент, а также подсвечиваем элементы до индекса
+    for (let i = 0; i <= index; i++) {
+      await pause(DELAY_IN_MS);
+      activeIndex++;
+      changingElements.push(i);
+      setActiveIndex(activeIndex);
+      setListItems(
+        getListItems({ index: changingElements, state: ElementStates.Changing })
+      );
+    }
+    // Убираем активный элемент, добавляем новый элемент и подсвечиваем его как "Modified"
+    setActiveIndex(undefined);
+    list.insertAt(inputValue, index);
+    setListItems(getListItems({ index, state: ElementStates.Modified }));
+    // Делаем паузу и отображаем новый список элементов со статусом "Default"
+    await pause(DELAY_IN_MS);
     setListItems(getListItems());
+    // Выключаем анимацию
+    setLoadingButton("");
+    setIsAnimating(false);
   };
 
-  const handleDeleteByIndexl = () => {
+  const handleDeleteByIndex = () => {
     if (!indexValue) return;
     console.log("delete at", indexValue);
     list.deleteAt(parseInt(indexValue));
@@ -191,12 +224,12 @@ export const ListPage: React.FC = () => {
 
   const getHead = (i: number) => {
     const addingFirst = activeIndex === 0 && isAdding;
-    return addingFirst || i !== 0 ? "" : "head";
+    return addingFirst || i !== 0 ? "" : HEAD;
   };
 
   const getTail = (i: number) => {
     const deletingLast = activeIndex === list.getSize() - 1 && isDeleting;
-    return deletingLast || i !== list.getSize() - 1 ? "" : "tail";
+    return deletingLast || i !== list.getSize() - 1 ? "" : TAIL;
   };
 
   return (
@@ -263,7 +296,7 @@ export const ListPage: React.FC = () => {
         <Button
           extraClass={`${styles.deleteindex} ${styles.btn}`}
           text="Удалить по индексу"
-          onClick={handleDeleteByIndexl}
+          onClick={handleDeleteByIndex}
           isLoader={loadingButton === Buttons.deleteindex}
           disabled={!list.getSize() || !isValidIndex() || isAnimating}
         />
