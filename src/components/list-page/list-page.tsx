@@ -74,8 +74,24 @@ export const ListPage: React.FC = () => {
   const handleAddToTail = async () => {
     if (!inputValue) return;
     console.log("appending to tail", inputValue);
+    // Начинаем анимацию
+    setIsAnimating(true);
+    // Подсвечиваем последний элемент, устанвливаем статус "adding", делаем паузу
+    setIsAdding(true);
+    setActiveIndex(list.getSize() - 1);
+    await pause(SHORT_DELAY_IN_MS);
+    // После паузы убираем подсветку
+    setIsAdding(false);
+    setActiveIndex(undefined);
+    // Обновляем список и подсвечиваем измененный элемент, делаем паузу
     list.append(inputValue);
+    setListItems(getListItems(list.getSize() - 1, ElementStates.Modified));
+    await pause(SHORT_DELAY_IN_MS);
+    // После паузы ставим всем элементам стейт "Default"
     setListItems(getListItems());
+    // Выключаем анимацию и очищаем инпут
+    setIsAnimating(false);
+    setInputValue("");
   };
 
   const handleDeleteFromHead = () => {
