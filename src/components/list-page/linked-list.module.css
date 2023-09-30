@@ -54,7 +54,7 @@
   margin: 0;
   padding: 0;
   display: flex;
-  margin: 90px auto 0 auto;
+  margin: 110px auto 0 auto;
   justify-content: center;
   gap: 16px;
 }
@@ -63,4 +63,17 @@
   display: flex;
   gap: 16px;
   align-items: center;
+  position: relative;
+}
+
+.top {
+  position: absolute;
+  top: -70px;
+  left: 12px;
+}
+
+.bottom {
+  position: absolute;
+  bottom: -94px;
+  left: 12px;
 }
