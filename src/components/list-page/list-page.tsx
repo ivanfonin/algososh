@@ -20,12 +20,13 @@ import styles from "./linked-list.module.css";
 const INITIAL_LIST_ITEMS = ["0", "34", "8", "1"];
 
 type TListItem = {
-  letter?: string;
   index?: number;
+  state?: ElementStates;
+  letter?: string;
 };
 
 type TGetListItemsProps = {
-  index?: number | number[];
+  index?: number;
   state?: ElementStates;
   text?: string;
 };
@@ -58,12 +59,10 @@ export const ListPage: React.FC = () => {
         ? props
         : { index: undefined, state: undefined, text: undefined };
       const { index, state, text } = atts;
-      const indexes =
-        typeof index === "number" ? [index] : Array.isArray(index) ? index : [];
       return list.getItems().map((item, i) => {
         return {
-          letter: indexes.includes(i) && text !== undefined ? text : item,
-          state: indexes.includes(i) && state ? state : ElementStates.Default,
+          letter: index === i && text !== undefined ? text : item,
+          state: index === i && state ? state : ElementStates.Default,
         };
       });
     },
@@ -155,7 +154,7 @@ export const ListPage: React.FC = () => {
     setLoadingButton(Buttons.deletetail);
     // Устанвливаем статус "deleting", в активном элементе выводим значение удаляемого элемента
     setIsDeleting(true);
-    setActiveValue(list.getItem(list.getSize() - 1));
+    setActiveValue(list.getItem(list.getSize()));
     setActiveIndex(list.getSize() - 1);
     // Убираем текст из удалеяемого элемента, обновляем список и делаем паузу
     setListItems(getListItems({ index: list.getSize() - 1, text: "" }));
@@ -180,23 +179,27 @@ export const ListPage: React.FC = () => {
     setIsAdding(true);
     setActiveValue(inputValue);
     // Сначала ставим активный элемент в самом начале, запоминаем элементы до нужного индекса
-    const changingElements = [];
     let activeIndex = 0;
     setActiveIndex(activeIndex);
     // Потом идем до индекса и переносим активный элемент, а также подсвечиваем элементы до индекса
     for (let i = 0; i <= index; i++) {
       await pause(DELAY_IN_MS);
       activeIndex++;
-      changingElements.push(i);
       setActiveIndex(activeIndex);
-      setListItems(
-        getListItems({ index: changingElements, state: ElementStates.Changing })
-      );
+      setListItems((prevItems) => {
+        if (!prevItems) return;
+        const newItems = [...prevItems]; // Для обновления предыдущего состояния делаем копию
+        if (prevItems?.length) {
+          newItems[i].state = ElementStates.Changing;
+        }
+        return newItems;
+      });
     }
     // Убираем активный элемент, добавляем новый элемент и подсвечиваем его как "Modified"
     setActiveIndex(undefined);
     list.insertAt(inputValue, index);
     setListItems(getListItems({ index, state: ElementStates.Modified }));
+    setIsAdding(false);
     // Делаем паузу и отображаем новый список элементов со статусом "Default"
     await pause(DELAY_IN_MS);
     setListItems(getListItems());
@@ -205,11 +208,48 @@ export const ListPage: React.FC = () => {
     setIsAnimating(false);
   };
 
-  const handleDeleteByIndex = () => {
+  const handleDeleteByIndex = async () => {
     if (!indexValue) return;
-    console.log("delete at", indexValue);
-    list.deleteAt(parseInt(indexValue));
+    const index = parseInt(indexValue);
+    // Включаем анимацию
+    setIsAnimating(true);
+    setLoadingButton(Buttons.deleteindex);
+    // Устанавливаем статус "deleting", сохраняем значение удаляемого элемента
+    setIsDeleting(true);
+    setActiveValue(list.getItem(index + 1));
+    // Идем до индекса и подсвечиваем элементы
+    for (let i = 0; i < index; i++) {
+      setListItems((prevItems) => {
+        if (!prevItems) return;
+        const newItems = [...prevItems]; // Для обновления предыдущего состояния делаем копию
+        if (prevItems?.length) {
+          newItems[i].state = ElementStates.Changing;
+        }
+        return newItems;
+      });
+      await pause(DELAY_IN_MS);
+    }
+    // Показываем активный элемент
+    setActiveIndex(index);
+    // А из искомого удаляем текст, делаем на основе предыдущего состояния, чтобы сохранить state у элементов
+    setListItems((prevItems) => {
+      if (!prevItems) return;
+      const newItems = [...prevItems]; // Для обновления предыдущего состояния делаем копию
+      if (prevItems?.length) {
+        newItems[index].letter = "";
+      }
+      return newItems;
+    });
+    // Делаем паузу, а после удаляем элемент из списка, убираем активный, снимаем статус "deleting"
+    await pause(DELAY_IN_MS);
+    setActiveIndex(undefined);
+    setIsDeleting(false);
+    list.deleteAt(index);
+    // Выводим новый список
     setListItems(getListItems());
+    // Выключаем анимацию
+    setLoadingButton("");
+    setIsAnimating(false);
   };
 
   const isValidIndex = () => {

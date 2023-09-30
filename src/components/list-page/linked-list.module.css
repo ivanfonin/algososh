@@ -2,7 +2,7 @@
   display: grid;
   margin: 0 auto;
   max-width: 952px;
-  grid-template-columns: [input] 204px [addhead] 1fr [addtail] 1fr [deletehead] 1fr [deletetail];
+  grid-template-columns: [input] 204px [addhead] 181.4px [addtail] 181.4px [deletehead] 181.4px [deletetail];
   grid-template-rows: auto auto;
   gap: 12px;
   align-items: top;
