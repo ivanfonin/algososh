@@ -6,12 +6,8 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { fibonacci } from "./algorithm";
 import { pause } from "../../utils/pause";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { TNumber } from "../../types/fibonacci-page";
 import styles from "./fibonacci.module.css";
-
-export type TNumber = {
-  letter: string;
-  index: number;
-};
 
 export const FibonacciPage: React.FC = () => {
   const [isAnimating, setIsAnimating] = useState(false);
