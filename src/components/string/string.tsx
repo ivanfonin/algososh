@@ -17,8 +17,7 @@ export const StringComponent: React.FC = () => {
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    const symbols = inputValue.split("");
-    const letters = symbols.map((letter) => ({
+    const letters = inputValue.split("").map((letter) => ({
       state: ElementStates.Default,
       letter,
     }));
