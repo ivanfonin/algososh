@@ -1,40 +1,27 @@
-import React from "react";
 import { swap } from "../../utils/swap";
-import { pause } from "../../utils/pause";
-import { DELAY_IN_MS } from "../../constants/delays";
 import { ElementStates } from "../../types/element-states";
 import { TLetter } from "../../types/string";
 
 /**
- * Функция наоброт массив элементов, представляющих собой символы в строке.
+ * Функция разворачивает наоброт массив элементов, представляющих собой символы в строке.
  *
- * @param {Array} letters – Массив объектов букв с состоянием.
- * @param {Function} setCircles - Функция устанвливает стейт букв.
- * @param {Function} setIsAnimating - Функция устанвливает стейт анимации.
+ * @param {Array} letters – Массив объектов TLetter для разворота.
  *
- * @return {void}
+ * @return {Array} - Двумерный массив шагов c результатами перестановки на каждом шаге.
  */
-export const reverseArray = async (
-  letters: TLetter[],
-  setCircles: React.Dispatch<React.SetStateAction<TLetter[]>>,
-  setIsAnimating: React.Dispatch<React.SetStateAction<boolean>>
-) => {
-  setIsAnimating(true);
-  await pause(DELAY_IN_MS);
+export const reverseArr = (letters: TLetter[]) => {
+  const steps: TLetter[][] = [];
+  steps.push(JSON.parse(JSON.stringify(letters))); // Начальное состояние
   for (let i = 0; i < Math.ceil(letters.length / 2); i++) {
-    // Подсвечиваем элементы, которые меняются местами.
     if (i !== letters.length - i - 1) {
       letters[i].state = ElementStates.Changing;
       letters[letters.length - i - 1].state = ElementStates.Changing;
-      setCircles([...letters]);
+      steps.push(JSON.parse(JSON.stringify(letters))); // Переставляемые элементы выделены
     }
-    // Делаем паузу.
-    await pause(DELAY_IN_MS);
-    // Делаем перестановку и подсвечиваем элементы, которые поменяли.
     swap(letters, i, letters.length - i - 1);
     letters[i].state = ElementStates.Modified;
     letters[letters.length - i - 1].state = ElementStates.Modified;
-    setCircles([...letters]);
+    steps.push(JSON.parse(JSON.stringify(letters))); // Переставленные элементы выделены
   }
-  setIsAnimating(false);
+  return steps;
 };
