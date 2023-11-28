@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
@@ -10,20 +10,31 @@ import { TNumber } from "../../types/fibonacci-page";
 import styles from "./fibonacci.module.css";
 
 export const FibonacciPage: React.FC = () => {
+  const isMounted = useRef(true);
   const [isAnimating, setIsAnimating] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [circles, setCircles] = useState<TNumber[]>([]);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const animate = async (numbers: number[]) => {
     setIsAnimating(true);
     for (let i = 0; i < numbers.length; i++) {
       await pause(SHORT_DELAY_IN_MS);
-      setCircles((prevCircles) => [
-        ...prevCircles,
-        { index: i, letter: numbers[i].toString() },
-      ]);
+      if (isMounted.current) {
+        setCircles((prevCircles) => [
+          ...prevCircles,
+          { index: i, letter: numbers[i].toString() },
+        ]);
+      }
     }
-    setIsAnimating(false);
+    if (isMounted.current) {
+      setIsAnimating(false);
+    }
   };
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
