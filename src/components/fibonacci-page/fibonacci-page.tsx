@@ -49,7 +49,14 @@ export const FibonacciPage: React.FC = () => {
             setInputValue((evt.target as HTMLInputElement).value)
           }
         />
-        <Button type="submit" text="Рассчитать" isLoader={isAnimating} />
+        <Button
+          type="submit"
+          text="Рассчитать"
+          isLoader={isAnimating}
+          disabled={
+            isAnimating || parseInt(inputValue) < 1 || parseInt(inputValue) > 19
+          }
+        />
       </form>
       <div className={styles.fibonacci}>
         {circles &&
