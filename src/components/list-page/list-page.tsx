@@ -17,7 +17,10 @@ import { DELAY_IN_MS } from "../../constants/delays";
 import { HEAD, TAIL } from "../../constants/element-captions";
 import styles from "./linked-list.module.css";
 
-const INITIAL_LIST_ITEMS = ["0", "34", "8", "1"];
+const INITIAL_LIST_ITEMS: string[] = [];
+for (let i = 0; i < 4; i++) {
+  INITIAL_LIST_ITEMS.push(Math.floor(Math.random() * 100).toString());
+}
 
 type TListItem = {
   index?: number;
