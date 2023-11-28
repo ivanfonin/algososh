@@ -14,7 +14,7 @@ import styles from "./queue-page.module.css";
 const queue = new Queue<TQueueItem>(QUEUE_SIZE, QUEUE_ITEM); // Инициализируем один раз вне компонента.
 
 export const QueuePage: React.FC = () => {
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState("");
   const [queueItems, setQueueItems] = useState<TQueueItem[]>();
 
   useEffect(() => {

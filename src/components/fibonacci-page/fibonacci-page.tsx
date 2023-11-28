@@ -11,7 +11,7 @@ import styles from "./fibonacci.module.css";
 
 export const FibonacciPage: React.FC = () => {
   const [isAnimating, setIsAnimating] = useState(false);
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState("");
   const [circles, setCircles] = useState<TNumber[]>([]);
 
   const animate = async (numbers: number[]) => {

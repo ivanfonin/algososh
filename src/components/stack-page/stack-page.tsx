@@ -12,7 +12,7 @@ import styles from "./stack-page.module.css";
 
 export const StackPage: React.FC = () => {
   const [stackItems, setStackItems] = useState<TStackItem[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState("");
   const stack = new Stack<TStackItem>(stackItems);
 
   const handleAddItem = async (

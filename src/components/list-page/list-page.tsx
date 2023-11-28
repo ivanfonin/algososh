@@ -50,8 +50,8 @@ export const ListPage: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | undefined>();
   const [activeValue, setActiveValue] = useState<string | undefined>("");
   const [loadingButton, setLoadingButton] = useState<Buttons | "">("");
-  const [inputValue, setInputValue] = useState<string>("");
-  const [indexValue, setIndexValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState("");
+  const [indexValue, setIndexValue] = useState("");
   const [listItems, setListItems] = useState<TListItem[]>();
   const list = useMemo(() => new LinkedList<string>(), []);
 
