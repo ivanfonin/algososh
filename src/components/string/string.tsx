@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
@@ -11,9 +11,16 @@ import { pause } from "../../utils/pause";
 import styles from "./string.module.css";
 
 export const StringComponent: React.FC = () => {
+  const isMounted = useRef(true);
   const [isAnimating, setIsAnimating] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [circles, setCircles] = useState<TLetter[]>([]);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -34,9 +41,13 @@ export const StringComponent: React.FC = () => {
     setIsAnimating(true);
     for (let i = 0; i < steps.length; i++) {
       await pause(DELAY_IN_MS);
-      setCircles(steps[i]);
+      if (isMounted.current) {
+        setCircles(steps[i]);
+      }
     }
-    setIsAnimating(false);
+    if (isMounted.current) {
+      setIsAnimating(false);
+    }
   };
 
   return (
