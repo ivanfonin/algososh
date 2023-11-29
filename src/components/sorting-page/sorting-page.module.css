@@ -1,0 +1,36 @@
+.grid {
+  display: grid;
+  margin: 0 auto;
+  max-width: 924px;
+  grid-template-columns: [select] auto 40px [bubble] auto 1fr [asc] 208px 12px [desc] 208px 1fr [reset] auto;
+  align-items: center;
+}
+
+.select {
+  grid-column-start: select;
+}
+
+.bubble {
+  grid-column-start: bubble;
+}
+
+.asc {
+  grid-column-start: asc;
+}
+
+.desc {
+  grid-column-start: desc;
+}
+
+.reset {
+  grid-column-start: reset;
+}
+
+.columns {
+  height: 348px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-top: 48px;
+  gap: 12px;
+}

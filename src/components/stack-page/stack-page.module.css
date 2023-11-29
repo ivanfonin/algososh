@@ -1,0 +1,31 @@
+.grid {
+  display: grid;
+  margin: 0 auto;
+  max-width: 830px;
+  grid-template-columns: [input] 377px [add] auto [delete] auto 1fr [clear] auto;
+  gap: 12px;
+  align-items: top;
+}
+
+.input {
+  grid-column-start: input;
+}
+
+.add {
+  grid-column-start: add;
+}
+
+.delete {
+  grid-column-start: delete;
+}
+
+.clear {
+  grid-column-start: clear;
+}
+
+.stack {
+  display: flex;
+  margin: 120px auto 0 auto;
+  justify-content: center;
+  gap: 16px;
+}
