@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { RadioInput } from "../ui/radio-input/radio-input";
 import { Button } from "../ui/button/button";
@@ -7,9 +7,12 @@ import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
 import { bubbleSort, selectSort } from "./algorithms";
 import { Algorithms, TColumn } from "../../types/sorting-page";
+import { pause } from "../../utils/pause";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import styles from "./sorting-page.module.css";
 
 export const SortingPage: React.FC = () => {
+  const isMounted = useRef(true);
   const [array, setArray] = useState<TColumn[]>([]);
   const [order, setOrder] = useState<Direction>();
   const [algorithm, setAlgorithm] = useState<string>(Algorithms.Bubble);
@@ -29,12 +32,25 @@ export const SortingPage: React.FC = () => {
 
   useEffect(() => {
     randomArr();
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
-  const sort = (order: Direction) => {
+  const sort = async (order: Direction) => {
     setOrder(order);
     if (algorithm === Algorithms.Select) {
-      selectSort(array, order, setArray, setIsAnimating);
+      setIsAnimating(true);
+      const steps = await selectSort(array, order);
+      for (const step of steps) {
+        if (isMounted.current) {
+          setArray(step);
+        }
+        await pause(SHORT_DELAY_IN_MS);
+      }
+      if (isMounted.current) {
+        setIsAnimating(false);
+      }
     }
     if (algorithm === Algorithms.Bubble) {
       bubbleSort(array, order, setArray, setIsAnimating);

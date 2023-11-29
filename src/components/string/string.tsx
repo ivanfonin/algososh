@@ -39,11 +39,11 @@ export const StringComponent: React.FC = () => {
     setIsAnimating: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
     setIsAnimating(true);
-    for (let i = 0; i < steps.length; i++) {
-      await pause(DELAY_IN_MS);
+    for (const step of steps) {
       if (isMounted.current) {
-        setCircles(steps[i]);
+        setCircles(step);
       }
+      await pause(DELAY_IN_MS);
     }
     if (isMounted.current) {
       setIsAnimating(false);
