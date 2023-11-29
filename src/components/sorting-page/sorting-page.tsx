@@ -53,7 +53,17 @@ export const SortingPage: React.FC = () => {
       }
     }
     if (algorithm === Algorithms.Bubble) {
-      bubbleSort(array, order, setArray, setIsAnimating);
+      setIsAnimating(true);
+      const steps = await bubbleSort(array, order);
+      for (const step of steps) {
+        if (isMounted.current) {
+          setArray(step);
+        }
+        await pause(SHORT_DELAY_IN_MS);
+      }
+      if (isMounted.current) {
+        setIsAnimating(false);
+      }
     }
   };
 
