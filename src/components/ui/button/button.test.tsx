@@ -24,22 +24,22 @@ describe("Тестируем компонент Button", () => {
   afterEach(cleanup);
 
   it("Кнопка с пропсами рендерится без ошибок", () => {
-    const tree = renderer.create(<Button {...buttonProps} />).toJSON();
+    const tree = renderer.create(<Button {...buttonProps} />);
     expect(tree).toMatchSnapshot();
   });
 
   it("Кнопка без текста рендерится без ошибок", () => {
-    const tree = renderer.create(<Button />).toJSON();
+    const tree = renderer.create(<Button />);
     expect(tree).toMatchSnapshot();
   });
 
   it("Кнопка в состоянии disabled рендерится без ошибок", () => {
-    const tree = renderer.create(<Button disabled={true} />).toJSON();
+    const tree = renderer.create(<Button disabled={true} />);
     expect(tree).toMatchSnapshot();
   });
 
   it("Кнопка с индикацией загрузки рендерится без ошибок", () => {
-    const tree = renderer.create(<Button isLoader={true} />).toJSON();
+    const tree = renderer.create(<Button isLoader={true} />);
     expect(tree).toMatchSnapshot();
   });
 
