@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Проверка снапшота, проверка обработичка событий, состояния загрузки Должна матчиться со снапшотом 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false extra-class"
+  data-testid="button-test"
+  disabled={false}
+  type="button"
+>
+  <p
+    className="text undefined"
+  >
+    Text
+  </p>
+</button>
+`;
