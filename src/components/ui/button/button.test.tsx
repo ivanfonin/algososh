@@ -23,14 +23,17 @@ const ButtonTestComponent = () => {
 describe("Тестируем компонент Button", () => {
   afterEach(cleanup);
 
-  // Сравниваем со снапшотом
   it("Кнопка с пропсами рендерится без ошибок", () => {
-    const ButtonComponent = renderer.create(<Button {...buttonProps} />);
-    expect(ButtonComponent).toMatchSnapshot();
+    const tree = renderer.create(<Button {...buttonProps} />).toJSON();
+    expect(tree).toMatchSnapshot();
   });
 
-  // Проверка работоспособности
-  it("Нажатие на кнопку меняет состояние, isLoader теперь true, появляется иконка загрузки", async () => {
+  it("Кнопка без текста и в состоянии disabled рендерится без ошибок", () => {
+    const tree = renderer.create(<Button text={""} disabled={true} />).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
+  it("Тестируем обработчик onClick, клик меняет свойство isLoader на true, появляется иконка загрузки", async () => {
     render(<ButtonTestComponent />);
 
     // Находим и проверяем кнопку
