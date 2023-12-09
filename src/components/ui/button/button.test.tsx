@@ -20,30 +20,31 @@ const ButtonTestComponent = () => {
   return <Button {...combinedProps} />;
 };
 
-describe("Проверка снапшота, проверка обработичка событий, состояния загрузки", () => {
+describe("Тестируем компонент Button", () => {
   afterEach(cleanup);
 
   // Сравниваем со снапшотом
-  it("Должна матчиться со снапшотом", () => {
+  it("Кнопка с пропсами рендерится без ошибок", () => {
     const ButtonComponent = renderer.create(<Button {...buttonProps} />);
     expect(ButtonComponent).toMatchSnapshot();
   });
 
   // Проверка работоспособности
-  it("Должна обрабатывать клик, после клика менять состояние isLoader", async () => {
+  it("Нажатие на кнопку меняет состояние, isLoader теперь true, появляется иконка загрузки", async () => {
     render(<ButtonTestComponent />);
 
-    // Находим кнопку
+    // Находим и проверяем кнопку
     const buttonElement = screen.getByTestId("button-test");
-    // screen.debug(buttonElement);
-
-    // Проверяем текст в кнопке
+    expect(buttonElement).toBeTruthy();
+    expect(buttonElement.tagName).toBe("BUTTON");
     expect(buttonElement).toHaveTextContent("Text");
 
     // Кликаем по кнопке
     fireEvent.click(buttonElement);
 
     // После клика на кнопке должна появиться иконка загрузки
-    expect(screen.getByTestId("svg-loader")).toBeInTheDocument();
+    const loaderIcon = screen.getByTestId("svg-loader");
+    expect(loaderIcon).toBeTruthy();
+    expect(loaderIcon.tagName).toBe("IMG");
   });
 });
