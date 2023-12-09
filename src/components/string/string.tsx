@@ -3,7 +3,6 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
 import { Circle } from "../ui/circle/circle";
-import { ElementStates } from "../../types/element-states";
 import { TLetter } from "../../types/string";
 import { reverseArr } from "./algorythm";
 import { DELAY_IN_MS } from "../../constants/delays";
@@ -24,12 +23,8 @@ export const StringComponent: React.FC = () => {
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    const letters = inputValue.split("").map((letter) => ({
-      state: ElementStates.Default,
-      letter,
-    }));
     setInputValue("");
-    const steps = reverseArr(letters);
+    const { steps } = reverseArr(inputValue.split(""));
     animate(steps, setCircles, setIsAnimating);
   };
 
