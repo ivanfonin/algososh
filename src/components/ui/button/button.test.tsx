@@ -28,8 +28,18 @@ describe("Тестируем компонент Button", () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it("Кнопка без текста и в состоянии disabled рендерится без ошибок", () => {
-    const tree = renderer.create(<Button text={""} disabled={true} />).toJSON();
+  it("Кнопка без текста рендерится без ошибок", () => {
+    const tree = renderer.create(<Button />).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
+  it("Кнопка в состоянии disabled рендерится без ошибок", () => {
+    const tree = renderer.create(<Button disabled={true} />).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
+  it("Кнопка с индикацией загрузки рендерится без ошибок", () => {
+    const tree = renderer.create(<Button isLoader={true} />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
