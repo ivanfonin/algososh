@@ -49,7 +49,7 @@ export const StringComponent: React.FC = () => {
     <SolutionLayout title="Строка">
       <form className={styles.form} onSubmit={onSubmit}>
         <Input
-          data-cy="string-input"
+          data-cy="input"
           value={inputValue}
           placeholder="Введите текст"
           maxLength={11}
@@ -60,7 +60,7 @@ export const StringComponent: React.FC = () => {
           }
         />
         <Button
-          data-cy="string-button"
+          data-cy="button"
           type="submit"
           text="Развернуть"
           isLoader={isAnimating}
