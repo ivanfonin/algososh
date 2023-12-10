@@ -25,6 +25,9 @@ export const QueuePage: React.FC = () => {
     evt: FormEvent<HTMLFormElement | HTMLButtonElement>
   ) => {
     evt.preventDefault();
+    if (queue.getTail() === QUEUE_SIZE) {
+      return;
+    }
     // Сначала добавлем статус 'Changing' хвосту.
     queue.setItemState(queue.getTail(), ElementStates.Changing);
     setQueueItems([...queue.getItems()]);
