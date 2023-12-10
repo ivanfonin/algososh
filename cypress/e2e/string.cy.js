@@ -3,7 +3,6 @@ import { DELAY_IN_MS } from "../../src/constants/delays";
 describe("Тестирование алгоритма разворота строки", function () {
   const stringInput = "[data-cy='string-input']";
   const stringButton = "[data-cy='string-button']";
-
   const circleCircle = "[class^=circle_circle__]";
 
   beforeEach(function () {
