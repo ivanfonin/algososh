@@ -49,6 +49,7 @@ export const StringComponent: React.FC = () => {
     <SolutionLayout title="Строка">
       <form className={styles.form} onSubmit={onSubmit}>
         <Input
+          data-cy="string-input"
           value={inputValue}
           placeholder="Введите текст"
           maxLength={11}
@@ -58,7 +59,13 @@ export const StringComponent: React.FC = () => {
             setInputValue((evt.target as HTMLInputElement).value)
           }
         />
-        <Button type="submit" text="Развернуть" isLoader={isAnimating} />
+        <Button
+          data-cy="string-button"
+          type="submit"
+          text="Развернуть"
+          isLoader={isAnimating}
+          disabled={isAnimating || !inputValue}
+        />
       </form>
       <div className={styles.string}>
         {circles && circles.map((letter, i) => <Circle key={i} {...letter} />)}
