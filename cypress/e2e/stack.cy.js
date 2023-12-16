@@ -21,7 +21,7 @@ describe("Тестирование работы со стеком", function () 
     cy.get(clearBtn).should("be.disabled");
   });
 
-  it("Проверка анимации при добавлении элментов в стек", function () {
+  it("Проверка анимации при добавлении/удалении элментов стека", function () {
     // Добавляем первый элемент в стек
     cy.get(input).type("1");
     cy.get(submitBtn).should("not.be.disabled");
