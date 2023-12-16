@@ -280,6 +280,7 @@ export const ListPage: React.FC = () => {
     <SolutionLayout title="Связный список">
       <form className={styles.grid}>
         <Input
+          data-cy="input-text"
           extraClass={`${styles.input}`}
           placeholder="Введите текст"
           value={inputValue}
@@ -291,6 +292,7 @@ export const ListPage: React.FC = () => {
           }
         />
         <Button
+          data-cy="button-add-head"
           extraClass={`${styles.addhead} ${styles.btn}`}
           text="Добавить в head"
           onClick={handleAddToHead}
@@ -298,6 +300,7 @@ export const ListPage: React.FC = () => {
           disabled={!inputValue || isAnimating}
         />
         <Button
+          data-cy="button-add-tail"
           extraClass={`${styles.addtail} ${styles.btn}`}
           text="Добавить в tail"
           onClick={handleAddToTail}
@@ -305,6 +308,7 @@ export const ListPage: React.FC = () => {
           disabled={!inputValue || isAnimating}
         />
         <Button
+          data-cy="button-delete-head"
           extraClass={`${styles.deletehead} ${styles.btn}`}
           text="Удалить из head"
           onClick={handleDeleteFromHead}
@@ -312,6 +316,7 @@ export const ListPage: React.FC = () => {
           disabled={!list.current.getSize() || isAnimating}
         />
         <Button
+          data-cy="button-delete-tail"
           extraClass={`${styles.deletetail} ${styles.btn}`}
           text="Удалить из tail"
           onClick={handleDeleteFromTail}
@@ -319,6 +324,7 @@ export const ListPage: React.FC = () => {
           disabled={!list.current.getSize() || isAnimating}
         />
         <Input
+          data-cy="input-index"
           type="number"
           min={0}
           step={1}
@@ -331,6 +337,7 @@ export const ListPage: React.FC = () => {
           }
         />
         <Button
+          data-cy="button-add-index"
           extraClass={`${styles.addindex} ${styles.btn}`}
           text="Добавить по индексу"
           onClick={handleAddByIndex}
@@ -338,6 +345,7 @@ export const ListPage: React.FC = () => {
           disabled={!inputValue || !isValidAddIndex() || isAnimating}
         />
         <Button
+          data-cy="button-delete-index"
           extraClass={`${styles.deleteindex} ${styles.btn}`}
           text="Удалить по индексу"
           onClick={handleDeleteByIndex}
