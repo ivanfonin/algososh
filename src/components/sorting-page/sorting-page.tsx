@@ -13,21 +13,26 @@ import styles from "./sorting-page.module.css";
 
 export const SortingPage: React.FC = () => {
   const isMounted = useRef(true);
-  const [array, setArray] = useState<TColumn[]>([]);
+  const [arr, setArr] = useState<number[]>([]);
+  const [columns, setColumns] = useState<TColumn[]>([]);
   const [order, setOrder] = useState<Direction>();
   const [algorithm, setAlgorithm] = useState<string>(Algorithms.Bubble);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   const randomArr = () => {
     const arr = [];
+    const cols = [];
     const n = Math.floor(Math.random() * 17 + 3);
     for (let i = 0; i < n; i++) {
-      arr.push({
-        index: Math.floor(Math.random() * 100 + 1),
+      const randomNumber = Math.floor(Math.random() * 100 + 1);
+      arr.push(randomNumber);
+      cols.push({
+        index: randomNumber,
         state: ElementStates.Default,
       });
     }
-    setArray(arr);
+    setArr(arr);
+    setColumns(cols);
   };
 
   useEffect(() => {
@@ -41,10 +46,10 @@ export const SortingPage: React.FC = () => {
     setOrder(order);
     if (algorithm === Algorithms.Select) {
       setIsAnimating(true);
-      const steps = await selectSort(array, order);
+      const { steps } = await selectSort(arr, order);
       for (const step of steps) {
         if (isMounted.current) {
-          setArray(step);
+          setColumns(step);
         }
         await pause(SHORT_DELAY_IN_MS);
       }
@@ -54,10 +59,10 @@ export const SortingPage: React.FC = () => {
     }
     if (algorithm === Algorithms.Bubble) {
       setIsAnimating(true);
-      const steps = await bubbleSort(array, order);
+      const { steps } = await bubbleSort(arr, order);
       for (const step of steps) {
         if (isMounted.current) {
-          setArray(step);
+          setColumns(step);
         }
         await pause(SHORT_DELAY_IN_MS);
       }
@@ -119,7 +124,7 @@ export const SortingPage: React.FC = () => {
         ></Button>
       </div>
       <div className={styles.columns}>
-        {array && array.map((item, i) => <Column key={i} {...item} />)}
+        {columns && columns.map((item, i) => <Column key={i} {...item} />)}
       </div>
     </SolutionLayout>
   );

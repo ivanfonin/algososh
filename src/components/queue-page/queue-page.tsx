@@ -25,6 +25,9 @@ export const QueuePage: React.FC = () => {
     evt: FormEvent<HTMLFormElement | HTMLButtonElement>
   ) => {
     evt.preventDefault();
+    if (queue.getTail() === QUEUE_SIZE) {
+      return;
+    }
     // Сначала добавлем статус 'Changing' хвосту.
     queue.setItemState(queue.getTail(), ElementStates.Changing);
     setQueueItems([...queue.getItems()]);
@@ -69,6 +72,7 @@ export const QueuePage: React.FC = () => {
     <SolutionLayout title="Очередь">
       <form onSubmit={handleAddItem} className={styles.grid}>
         <Input
+          data-cy="input"
           extraClass={styles.input}
           value={inputValue}
           placeholder="Введите текст"
@@ -79,6 +83,7 @@ export const QueuePage: React.FC = () => {
           }
         />
         <Button
+          data-cy="button-submit"
           type="submit"
           extraClass={styles.add}
           text="Добавить"
@@ -86,6 +91,7 @@ export const QueuePage: React.FC = () => {
           onClick={handleAddItem}
         />
         <Button
+          data-cy="button-delete"
           type="button"
           extraClass={styles.delete}
           text="Удалить"
@@ -93,6 +99,7 @@ export const QueuePage: React.FC = () => {
           onClick={handleDeleteItem}
         />
         <Button
+          data-cy="button-clear"
           type="button"
           extraClass={styles.clear}
           text="Очистить"

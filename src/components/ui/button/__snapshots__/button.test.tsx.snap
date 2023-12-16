@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Тестируем компонент Button Кнопка без текста рендерится без ошибок 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false "
+  data-testid="button-test"
+  type="button"
+>
+  <p
+    className="text undefined"
+  />
+</button>
+`;
+
+exports[`Тестируем компонент Button Кнопка в состоянии disabled рендерится без ошибок 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false "
+  data-testid="button-test"
+  disabled={true}
+  type="button"
+>
+  <p
+    className="text undefined"
+  />
+</button>
+`;
+
+exports[`Тестируем компонент Button Кнопка с индикацией загрузки рендерится без ошибок 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined loader "
+  data-testid="button-test"
+  disabled={true}
+  type="button"
+>
+  <img
+    alt="Загрузка."
+    className="loader_icon"
+    data-testid="svg-loader"
+    src="loader.svg"
+  />
+</button>
+`;
+
+exports[`Тестируем компонент Button Кнопка с пропсами рендерится без ошибок 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false extra-class"
+  data-testid="button-test"
+  disabled={false}
+  type="button"
+>
+  <p
+    className="text undefined"
+  >
+    Text
+  </p>
+</button>
+`;

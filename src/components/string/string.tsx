@@ -3,7 +3,6 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
 import { Circle } from "../ui/circle/circle";
-import { ElementStates } from "../../types/element-states";
 import { TLetter } from "../../types/string";
 import { reverseArr } from "./algorythm";
 import { DELAY_IN_MS } from "../../constants/delays";
@@ -24,12 +23,8 @@ export const StringComponent: React.FC = () => {
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    const letters = inputValue.split("").map((letter) => ({
-      state: ElementStates.Default,
-      letter,
-    }));
     setInputValue("");
-    const steps = reverseArr(letters);
+    const { steps } = reverseArr(inputValue.split(""));
     animate(steps, setCircles, setIsAnimating);
   };
 
@@ -54,6 +49,7 @@ export const StringComponent: React.FC = () => {
     <SolutionLayout title="Строка">
       <form className={styles.form} onSubmit={onSubmit}>
         <Input
+          data-cy="input"
           value={inputValue}
           placeholder="Введите текст"
           maxLength={11}
@@ -63,7 +59,13 @@ export const StringComponent: React.FC = () => {
             setInputValue((evt.target as HTMLInputElement).value)
           }
         />
-        <Button type="submit" text="Развернуть" isLoader={isAnimating} />
+        <Button
+          data-cy="button"
+          type="submit"
+          text="Развернуть"
+          isLoader={isAnimating}
+          disabled={isAnimating || !inputValue}
+        />
       </form>
       <div className={styles.string}>
         {circles && circles.map((letter, i) => <Circle key={i} {...letter} />)}

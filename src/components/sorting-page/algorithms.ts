@@ -11,9 +11,22 @@ import { TColumn } from "../../types/sorting-page";
  *
  * @return {Array} - Двумерный массив шагов c результатами перестановки на каждом шаге.
  */
-export const selectSort = async (arr: TColumn[], order: Direction) => {
+export const selectSort = async (
+  arr: number[] | [],
+  order: Direction = Direction.Ascending
+) => {
   const { length } = arr;
-  const result = JSON.parse(JSON.stringify(arr)); // Полная копия массива с объектами внутри
+  if (!length) {
+    return { arr, steps: [] };
+  }
+  // Наполняем массив колонок исходными элементами
+  const result = [];
+  for (let i = 0; i < length; i++) {
+    result.push({
+      index: arr[i],
+      state: ElementStates.Default,
+    });
+  }
   const steps: TColumn[][] = [];
   steps.push(JSON.parse(JSON.stringify(result))); // Начальное состояние
 
@@ -34,18 +47,32 @@ export const selectSort = async (arr: TColumn[], order: Direction) => {
       result[i].state = ElementStates.Default;
       result[j].state = ElementStates.Default;
     }
+    swap(arr, i, targetInd);
     swap(result, i, targetInd);
     result[i].state = ElementStates.Modified;
   }
   result[length - 1].state = ElementStates.Modified;
   steps.push(JSON.parse(JSON.stringify(result))); // Подсвечиваем измененные элементы
 
-  return steps;
+  return { arr, steps };
 };
 
-export const bubbleSort = async (arr: TColumn[], order: Direction) => {
+export const bubbleSort = async (
+  arr: number[] | [],
+  order: Direction = Direction.Ascending
+) => {
   const { length } = arr;
-  const result = JSON.parse(JSON.stringify(arr)); // Полная копия массива и объектов внутри
+  if (!length) {
+    return { arr, steps: [] };
+  }
+  // Наполняем массив колонок исходными элементами
+  const result = [];
+  for (let i = 0; i < length; i++) {
+    result.push({
+      index: arr[i],
+      state: ElementStates.Default,
+    });
+  }
   const steps: TColumn[][] = [];
   steps.push(JSON.parse(JSON.stringify(result))); // Начальное состояние
 
@@ -55,11 +82,11 @@ export const bubbleSort = async (arr: TColumn[], order: Direction) => {
       result[j + 1].state = ElementStates.Changing;
       steps.push(JSON.parse(JSON.stringify(result))); // Подсвечиваем изменяемые элементы
       if (
-        (order === Direction.Ascending &&
-          result[j].index < result[j + 1].index) ||
         (order === Direction.Descending &&
-          result[j].index > result[j + 1].index)
+          result[j].index < result[j + 1].index) ||
+        (order === Direction.Ascending && result[j].index > result[j + 1].index)
       ) {
+        swap(arr, j, j + 1);
         swap(result, j, j + 1);
       }
       result[j].state = ElementStates.Default;
@@ -68,5 +95,5 @@ export const bubbleSort = async (arr: TColumn[], order: Direction) => {
     steps.push(JSON.parse(JSON.stringify(result))); // Подсвечиваем измененные элементы
   }
 
-  return steps;
+  return { arr, steps };
 };
