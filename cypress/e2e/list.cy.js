@@ -329,8 +329,6 @@ describe("Тестирование работы со связным списко
 
     // Функция удаления элемента
     function deleteElementByIndex(text) {
-      cy.log(text, deleteIndex);
-
       // Первый элемент должен перейти в статус changing
       cy.get(listItems).then((li) => {
         cy.wrap(li)
